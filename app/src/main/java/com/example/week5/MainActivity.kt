@@ -10,6 +10,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import com.example.lab_week_05.api.CatApiService
 import com.example.lab_week_05.model.ImageData
+import com.example.lab_week_05.model.ImageLoader
+import android.widget.ImageView
+import com.example.lab_week_05.model.GlideLoader
 
 class MainActivity : AppCompatActivity() {
     private val retrofit by lazy {
@@ -18,7 +21,13 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(retrofit2.converter.moshi.MoshiConverterFactory.create())
             .build()
     }
+    private val imageResultView: ImageView by lazy {
+        findViewById(R.id.image_result)
+    }
 
+    private val imageLoader: ImageLoader by lazy {
+        GlideLoader(this)
+    }
     private val catApiService by lazy {
         retrofit.create(CatApiService::class.java)
     }
@@ -43,7 +52,15 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<ImageData>>, response: Response<List<ImageData>>) {
                 if (response.isSuccessful) {
                     val image = response.body()
-                    val firstImage = image?.firstOrNull()?.imageUrl ?: "No URL"
+                    val firstImage = image?.firstOrNull()?.imageUrl.orEmpty()
+
+                    if (firstImage.isNotBlank()) {
+                        imageLoader.loadImage(firstImage, imageResultView)
+                    } else {
+                        Log.d(MAIN_ACTIVITY, "Missing image URL")
+                    }
+
+                    // Untuk sementara, tampilkan URL dulu (nanti di Assignment diganti jadi breed)
                     apiResponseView.text = getString(R.string.image_placeholder, firstImage)
                 } else {
                     Log.e(MAIN_ACTIVITY, "Failed to get response\n" + response.errorBody()?.string().orEmpty())
@@ -51,7 +68,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-
     companion object {
         const val MAIN_ACTIVITY = "MAIN_ACTIVITY"
     }

@@ -49,4 +49,5 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.github.bumptech.glide:glide:4.14.2")
 }
