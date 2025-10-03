@@ -52,16 +52,21 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<ImageData>>, response: Response<List<ImageData>>) {
                 if (response.isSuccessful) {
                     val image = response.body()
-                    val firstImage = image?.firstOrNull()?.imageUrl.orEmpty()
+                    val first = image?.firstOrNull()
 
-                    if (firstImage.isNotBlank()) {
-                        imageLoader.loadImage(firstImage, imageResultView)
+                    // Ambil URL gambar untuk ditampilkan di ImageView
+                    val imageUrl = first?.imageUrl.orEmpty()
+                    if (imageUrl.isNotBlank()) {
+                        imageLoader.loadImage(imageUrl, imageResultView)
                     } else {
                         Log.d(MAIN_ACTIVITY, "Missing image URL")
                     }
 
-                    // Untuk sementara, tampilkan URL dulu (nanti di Assignment diganti jadi breed)
-                    apiResponseView.text = getString(R.string.image_placeholder, firstImage)
+                    // Ambil nama ras pertama, atau "Unknown" jika tidak ada
+                    val breedName = first?.breeds?.firstOrNull()?.name ?: "Unknown"
+
+                    // Tampilkan nama ras di TextView
+                    apiResponseView.text = getString(R.string.image_placeholder, breedName)
                 } else {
                     Log.e(MAIN_ACTIVITY, "Failed to get response\n" + response.errorBody()?.string().orEmpty())
                 }

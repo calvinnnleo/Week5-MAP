@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Week5</string>
-    <string name="image_placeholder">Image URL: %s</string>
+    <string name="image_placeholder">Breed: %s</string>
 </resources>
